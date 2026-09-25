@@ -219,7 +219,7 @@ td .sub{font-size:12px;color:var(--muted);font-weight:600}
 .status-select option{background:#fff;color:var(--ink)}
 .pill.ok{background:var(--green-l);color:var(--green-d)}
 .pill.exp{background:var(--coral-l);color:var(--coral-d)}
-.pill.ibuy{background:var(--green-l);color:var(--green-d)}
+.pill.UniversityOrderPortal{background:var(--green-l);color:var(--green-d)}
 .pill.ext{background:var(--sky-l);color:#1d6f9c}
 
 /* ============ FORMS ============ */
@@ -827,12 +827,11 @@ const ICON = {
   library:'<path d="M4 19V5a1 1 0 0 1 1-1h4v16H5a1 1 0 0 1-1-1zm6 1V4h4v16h-4zm6 0V6l4-1v14a1 1 0 0 1-.76.97L16 20z"/>',
 };
 
-/* ---------- default seed data (cancer lab flavored) ---------- */
+/* ---------- default seed data ---------- */
 function seed(){
   // A brand-new install starts empty on purpose: no demo vendors, orders, inventory,
-  // events, or jobs. Every lab's vendor list and ordering setup looks different (not
-  // everyone uses an iBuy-style portal, for instance), so it is safer to let people
-  // add their own than to guess and have it look wrong out of the box.
+  // events, or jobs. Every lab's vendor list and ordering setup looks different, so it is safer to let people
+  // add their own.
   // These four lists are just starting options for dropdowns, not records, so they
   // stay populated. Edit them here, or from Settings once the app is running.
   const orderCats=['Cell Culture','Antibodies','Drugs & Compounds','Mouse Supplies','Reagents & Chemicals','Plasticware & Consumables','Kits','Equipment','Office & General'];
@@ -842,7 +841,7 @@ function seed(){
   return {
     settings:{
       labName:'Your Lab', managerName:'Lab Manager', managerEmail:'', labEmails:'',
-      ibuyName:'', ibuyUrl:'',
+      UniversityOrderPortalName:'', UniversityOrderPortalUrl:'',
       digestDays:[4], digestEnabled:true, lastDigest:'',
       backupReminderEnabled:true, backupReminderDay:1, lastBackupReminder:'',
       statusSubscribers:[],
@@ -1436,8 +1435,8 @@ const TOURS={
   ],
   vendors:[
     {sel:'#vendSearch', title:'Find a vendor', body:'Searches vendor name, contact, and notes.'},
-    {sel:'[onclick="vendorForm()"]', title:'Add a vendor', body:'Mark it as an iBuy vendor to link straight to your institution’s ordering portal, or as external to link to their own website for quotes.'},
-    {sel:'.pill.ibuy, .pill.ext', title:'iBuy vs. external', body:'This badge shows which kind of vendor it is at a glance, so you know where "order" is going to take you.'}
+    {sel:'[onclick="vendorForm()"]', title:'Add a vendor', body:'Mark it as an UniversityOrderPortal vendor to link straight to your institution’s ordering portal, or as external to link to their own website for quotes.'},
+    {sel:'.pill.UniversityOrderPortal, .pill.ext', title:'UniversityOrderPortal vs. external', body:'This badge shows which kind of vendor it is at a glance, so you know where "order" is going to take you.'}
   ],
   settings:[
     {sel:'#s_lab', title:'Lab identity', body:'Set your lab’s name, manager, and the email list used when someone notifies the whole lab.'},
@@ -1730,10 +1729,10 @@ function offerAddToInventory(id){
 }
 function vendorLink(v,label){
   if(!v) return '';
-  if(v.type==='ibuy'){
-    const url=S.settings.ibuyUrl||'';
-    if(url) return `<a class="linkbtn" href="${esc(url)}" target="_blank" rel="noopener">🛒 ${esc(S.settings.ibuyName||'iBuy')}</a>`;
-    return `<span class="pill ibuy" title="Set your iBuy link in Settings">iBuy vendor</span>`;
+  if(v.type==='UniversityOrderPortal'){
+    const url=S.settings.UniversityOrderPortalUrl||'';
+    if(url) return `<a class="linkbtn" href="${esc(url)}" target="_blank" rel="noopener">🛒 ${esc(S.settings.UniversityOrderPortalName||'UniversityOrderPortal')}</a>`;
+    return `<span class="pill UniversityOrderPortal" title="Set your UniversityOrderPortal link in Settings">UniversityOrderPortal vendor</span>`;
   }
   if(v.url) return `<a class="linkbtn ext" href="${esc(v.url)}" target="_blank" rel="noopener">↗ ${esc(label||'Website')}</a>`;
   return `<span class="pill ext">External</span>`;
@@ -2195,15 +2194,15 @@ function renderVendors(){
       <input id="vendSearch" placeholder="Search vendors…" value="${esc(vendFilter.q)}" oninput="onVendSearch(this.value)"></div>
     <select onchange="vendFilter.type=this.value;renderVendBody()">
       <option value="">All vendors</option>
-      <option value="ibuy" ${vendFilter.type==='ibuy'?'selected':''}>iBuy only</option>
+      <option value="UniversityOrderPortal" ${vendFilter.type==='UniversityOrderPortal'?'selected':''}>UniversityOrderPortal only</option>
       <option value="external" ${vendFilter.type==='external'?'selected':''}>External only</option>
     </select>
     <span class="spacer"></span>
     <button class="btn primary" onclick="vendorForm()">+ Add vendor</button>
   </div>
-  ${!S.settings.ibuyUrl?`<div class="banner" style="background:linear-gradient(120deg,var(--sky-l),#fff);border-color:#bfe0f2">
+  ${!S.settings.UniversityOrderPortalUrl?`<div class="banner" style="background:linear-gradient(120deg,var(--sky-l),#fff);border-color:#bfe0f2">
       <span class="bimg">${DINO.stego()}</span>
-      <div><div class="bt">Set your iBuy link</div><div class="bs">Add your institution’s iBuy URL in Settings so every iBuy vendor links there.</div></div>
+      <div><div class="bt">Set your UniversityOrderPortal link</div><div class="bs">Add your institution’s UniversityOrderPortal URL in Settings so every UniversityOrderPortal vendor links there.</div></div>
       <span class="spacer"></span><button class="btn sky sm" onclick="navigate('settings')">Open settings</button></div>`:''}
   <div id="vendBodyWrap"></div>`;
   renderVendBody();
@@ -2214,15 +2213,15 @@ function renderVendBody(){
   let html=`<div class="tiny muted" style="margin:2px 2px 12px">${list.length} vendor${list.length===1?'':'s'}</div>
     <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">`;
   list.forEach(v=>{
-    const action = v.type==='ibuy'
-      ? (S.settings.ibuyUrl?`<a class="linkbtn" href="${esc(S.settings.ibuyUrl)}" target="_blank" rel="noopener">🛒 Open ${esc(S.settings.ibuyName||'iBuy')}</a>`:'<span class="tiny muted">Set the iBuy link in Settings</span>')
+    const action = v.type==='UniversityOrderPortal'
+      ? (S.settings.UniversityOrderPortalUrl?`<a class="linkbtn" href="${esc(S.settings.UniversityOrderPortalUrl)}" target="_blank" rel="noopener">🛒 Open ${esc(S.settings.UniversityOrderPortalName||'UniversityOrderPortal')}</a>`:'<span class="tiny muted">Set the UniversityOrderPortal link in Settings</span>')
       : (v.url?`<a class="linkbtn ext" href="${esc(v.url)}" target="_blank" rel="noopener">↗ Website / quote</a>`:'<span class="tiny muted">Add a website to enable quotes</span>');
     html+=`<div class="card">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
         <h3 style="font-size:16px">${esc(v.name)}</h3><span class="spacer" style="flex:1"></span>
         <button class="btn icon ghost sm" onclick="vendorForm('${v.id}')">✎</button>
       </div>
-      <div style="margin-bottom:8px">${v.type==='ibuy'?'<span class="pill ibuy">iBuy</span>':'<span class="pill ext">External</span>'}${v.cat?` <span class="tiny muted">· ${esc(v.cat)}</span>`:''}</div>
+      <div style="margin-bottom:8px">${v.type==='UniversityOrderPortal'?'<span class="pill UniversityOrderPortal">UniversityOrderPortal</span>':'<span class="pill ext">External</span>'}${v.cat?` <span class="tiny muted">· ${esc(v.cat)}</span>`:''}</div>
       ${v.contact?`<div class="kv"><span>Contact</span><b>${esc(v.contact)}</b></div>`:''}
       ${v.email?`<div class="kv"><span>Email</span><b><a href="mailto:${esc(v.email)}">${esc(v.email)}</a></b></div>`:''}
       ${v.note?`<div class="vnote">${esc(v.note)}</div>`:''}
@@ -2233,18 +2232,18 @@ function renderVendBody(){
   $('#vendBodyWrap').innerHTML=html;
 }
 function vendorForm(id){
-  const v= id? S.vendors.find(x=>x.id===id):{id:'',name:'',type:'ibuy',url:'',contact:'',email:'',note:'',cat:''};
+  const v= id? S.vendors.find(x=>x.id===id):{id:'',name:'',type:'UniversityOrderPortal',url:'',contact:'',email:'',note:'',cat:''};
   openModal(`
     <div class="modal-head"><span style="width:30px">${DINO.rex()}</span><h3>${id?'Edit vendor':'Add vendor'}</h3><button class="x" onclick="closeModal()">×</button></div>
     <div class="modal-body">
       <div class="field"><label>Vendor name</label><input id="v_name" value="${esc(v.name)}"></div>
       <div class="field"><label>Type</label>
         <select id="v_type" onchange="toggleVendorUrl()">
-          <option value="ibuy" ${v.type==='ibuy'?'selected':''}>iBuy vendor (links to your iBuy portal)</option>
+          <option value="UniversityOrderPortal" ${v.type==='UniversityOrderPortal'?'selected':''}>UniversityOrderPortal vendor (links to your UniversityOrderPortal portal)</option>
           <option value="external" ${v.type==='external'?'selected':''}>External vendor (links to their website)</option>
         </select>
       </div>
-      <div class="field" id="v_urlwrap" style="${v.type==='ibuy'?'display:none':''}">
+      <div class="field" id="v_urlwrap" style="${v.type==='UniversityOrderPortal'?'display:none':''}">
         <label>Website / quote link</label>
         <input id="v_url" value="${esc(v.url)}" placeholder="https://vendor.com/request-quote">
         <span class="help">Clicking the vendor takes you straight here to request a quote.</span>
@@ -2461,10 +2460,10 @@ function renderSettings(){
     </div>
 
     <div class="card pad-lg">
-      <h3>🛒 iBuy & ordering</h3>
-      <div class="field" style="margin-top:12px"><label>iBuy portal name</label><input id="s_ibuyname" value="${esc(s.ibuyName)}" placeholder="iBuy"></div>
-      <div class="field"><label>iBuy portal link</label><input id="s_ibuyurl" value="${esc(s.ibuyUrl)}" placeholder="https://your-institution.ibuy.edu"><span class="help">Every vendor marked “iBuy” opens this link.</span></div>
-      <button class="btn primary" onclick="saveIbuy()">Save iBuy link</button>
+      <h3>🛒 UniversityOrderPortal & ordering</h3>
+      <div class="field" style="margin-top:12px"><label>UniversityOrderPortal portal name</label><input id="s_UniversityOrderPortalname" value="${esc(s.UniversityOrderPortalName)}" placeholder="UniversityOrderPortal"></div>
+      <div class="field"><label>UniversityOrderPortal portal link</label><input id="s_UniversityOrderPortalurl" value="${esc(s.UniversityOrderPortalUrl)}" placeholder="https://your-institution.UniversityOrderPortal.edu"><span class="help">Every vendor marked “UniversityOrderPortal” opens this link.</span></div>
+      <button class="btn primary" onclick="saveUniversityOrderPortal()">Save UniversityOrderPortal link</button>
     </div>
 
     <div class="card pad-lg">
@@ -2598,7 +2597,7 @@ function removeChip(key,i){ S.settings[key].splice(i,1); save(); renderSettings(
 function toggleEjs(){ $('#ejsWrap').style.display = $('#s_emailmode').value==='emailjs'?'':'none'; }
 function toggleNotifyChannel(){ const slack=$('#s_notifychannel').value==='slack'; $('#slackWrap').style.display=slack?'':'none'; $('#emailModeWrap').style.display=slack?'none':''; }
 function saveIdentity(){ if($('#s_me')) setMe($('#s_me').value.trim()); S.settings.labName=$('#s_lab').value.trim()||'Your Lab'; S.settings.managerName=$('#s_mgr').value.trim()||'Lab Manager'; S.settings.managerEmail=$('#s_mgremail').value.trim(); S.settings.labEmails=$('#s_labemails').value.trim(); save(); applyChrome(); toast('Lab info saved 🦕','good'); }
-function saveIbuy(){ S.settings.ibuyName=$('#s_ibuyname').value.trim()||'iBuy'; S.settings.ibuyUrl=$('#s_ibuyurl').value.trim(); save(); toast('iBuy link saved','good'); }
+function saveUniversityOrderPortal(){ S.settings.UniversityOrderPortalName=$('#s_UniversityOrderPortalname').value.trim()||'UniversityOrderPortal'; S.settings.UniversityOrderPortalUrl=$('#s_UniversityOrderPortalurl').value.trim(); save(); toast('UniversityOrderPortal link saved','good'); }
 function saveNotif(){
   S.settings.notifyChannel=$('#s_notifychannel').value;
   S.settings.slackWebhook=$('#s_slackwebhook')?.value.trim()||'';

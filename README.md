@@ -15,7 +15,7 @@ There is no build step, no server to maintain. It's one HTML file that talks to 
 - **Notifications** — lab-wide alerts (order digest, urgent flags, backup reminders, lab notices) go out by email *or* Slack, whichever your lab prefers
 - **Activity feed** — a running log of everything that changed
 - **Guided tour** — a short walkthrough for every tab, shown automatically the first time someone signs in and replayable anytime from the top bar or Settings
-- **Works offline-first** — runs in local-only mode with no setup; add a free Supabase project when you're ready to share data across the lab
+- **Works offline-first** — runs in local-only mode with no setup. Add a free Supabase project when you're ready to share data across the lab
 
 ## Getting started
 

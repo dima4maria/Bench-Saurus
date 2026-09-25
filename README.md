@@ -2,9 +2,7 @@
 
 A free, single-file lab management app for ordering supplies, tracking inventory, running a shared events calendar with a journal-club paper library, keeping up with recurring lab jobs, and posting lab-wide notices — with a lighthearted dinosaur theme and over 50 hidden easter eggs.
 
-No build step, no server to maintain. It's one HTML file that talks to a free Supabase database, and you can host it anywhere that serves static files.
-
-![Dashboard screenshot](docs/screenshot-dashboard.png)
+There is no build step, no server to maintain. It's one HTML file that talks to a free Supabase database, and you can host it anywhere that serves static files.
 
 ## Features
 
@@ -65,7 +63,7 @@ Once it's running, open **Settings** to add your lab's name, members, vendors, s
 
 ### 4. Personalize the code (optional)
 
-Everything above is doable from the app itself. A handful of things live in the HTML file instead, because they're either security-sensitive or need to exist before anyone has signed in yet. All are optional — skip this if the defaults are fine.
+Everything above is doable from the app itself. A handful of things live in the HTML file instead, because they're either security-sensitive or need to exist before anyone has signed in yet. All are optional, so you can skip this if the defaults are fine.
 
 **Who can reset the app.** Near the top of the `<script>` section, search for `TRUSTED_ADMIN_EMAILS`:
 
@@ -77,7 +75,7 @@ const TRUSTED_ADMIN_EMAILS = [
 
 Anyone whose Supabase sign-in email is in this list (or who is currently set as "Lab manager email" in Settings) can clear all the data or wipe the app back to a blank slate. Add your own email, and anyone else you want to always have that power regardless of who's lab manager later. This list isn't shown anywhere in the app, so it's safe to leave a name in here even after that person moves on.
 
-**Starting point for dropdowns.** The app starts with no vendors, orders, inventory, or events, since every lab's setup is different (not everyone orders through the same kind of portal, for instance). The only things pre-filled are a handful of dropdown *options* — order categories, storage locations, lab member roles, and event types — which come from the `seed()` function (search for `function seed()`). Edit the lists there before you deploy if you'd rather start with your own categories, or just edit them from Settings once the app is running; either way works.
+**Starting point for dropdowns.** The app starts with no vendors, orders, inventory, or events, since every lab's setup is different (not everyone orders through the same kind of portal, for instance). The only things pre-filled are a handful of dropdown *options* — order categories, storage locations, lab member roles, and event types — which come from the `seed()` function (search for `function seed()`). Edit the lists there before you deploy if you'd rather start with your own categories, or just edit them from Settings once the app is running, either way works.
 
 **Colors.** Near the top of the `<style>` section, under `:root`, is the full color palette as named variables (`--green`, `--coral`, `--sun`, `--sky`, `--plum`, and so on). Swap any hex value and it updates everywhere that color is used, no need to hunt through the rest of the file.
 

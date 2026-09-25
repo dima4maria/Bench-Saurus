@@ -4,7 +4,8 @@ A free, single-file lab management app for ordering supplies, tracking inventory
 
 There is no build step, no server to maintain. It's one HTML file that talks to a free Supabase database, and you can host it anywhere that serves static files.
 
-See screenshot of dashboard view: <img width="416" height="261" alt="Screenshot 2026-09-24 at 9 56 04 PM" src="https://github.com/user-attachments/assets/0b5f6809-71df-4c0e-a011-c3452ce5b52e" />
+See screenshot of dashboard view:
+<img width="416" height="261" alt="Screenshot 2026-09-24 at 9 56 04 PM" src="https://github.com/user-attachments/assets/0b5f6809-71df-4c0e-a011-c3452ce5b52e" />
 
 
 ## Features

@@ -827,46 +827,18 @@ const ICON = {
   library:'<path d="M4 19V5a1 1 0 0 1 1-1h4v16H5a1 1 0 0 1-1-1zm6 1V4h4v16h-4zm6 0V6l4-1v14a1 1 0 0 1-.76.97L16 20z"/>',
 };
 
-/* ---------- default seed data ---------- */
+/* ---------- default seed data (cancer lab flavored) ---------- */
 function seed(){
-  const v = (name,type,url,note)=>({id:uid(),name,type,url:url||'',contact:'',note:note||'',cat:''});
-  const vendors=[
-    v('Sigma-Aldrich','ibuy','','Reagents and chemicals'),
-    v('Thermo Fisher','ibuy','','Cell culture and plasticware'),
-    v('Fisher Scientific','ibuy','','General lab supplies'),
-    v('VWR','ibuy','','General lab supplies'),
-    v('Cell Signaling Technology','external','https://www.cellsignal.com','Antibodies'),
-    v('Selleck Chemicals','external','https://www.selleckchem.com','Drugs and compounds'),
-    v('The Jackson Laboratory','external','https://www.jax.org','Mice'),
-    v('Tocris','external','https://www.tocris.com','Compounds')
-  ];
-  const vById = Object.fromEntries(vendors.map(x=>[x.name,x.id]));
+  // A brand-new install starts empty on purpose: no demo vendors, orders, inventory,
+  // events, or jobs. Every lab's vendor list and ordering setup looks different (not
+  // everyone uses an iBuy-style portal, for instance), so it is safer to let people
+  // add their own than to guess and have it look wrong out of the box.
+  // These four lists are just starting options for dropdowns, not records, so they
+  // stay populated. Edit them here, or from Settings once the app is running.
   const orderCats=['Cell Culture','Antibodies','Drugs & Compounds','Mouse Supplies','Reagents & Chemicals','Plasticware & Consumables','Kits','Equipment','Office & General'];
   const locs=['−80 °C Freezer','−20 °C Freezer','4 °C Fridge','Liquid N₂','Room Temp Shelf','Chemical Cabinet','Cold Room','Mouse Facility'];
   const members=['Lab Manager','Grad Student','Postdoc','Research Tech','Rotating Student'];
   const evTypes=['Seminar','Talk','Journal Club','Conference','Workshop','Lab Social'];
-
-  const orders=[
-    {id:uid(),item:'DMEM, high glucose (500 mL)',cat:'Cell Culture',vendor:vById['Thermo Fisher'],catalog:'11965092',qty:6,unit:18.5,reqBy:'Grad Student',date:todayKey(),status:'requested',urgent:false,quote:'',fund:'R01',note:''},
-    {id:uid(),item:'Anti-Ki67 antibody',cat:'Antibodies',vendor:vById['Cell Signaling Technology'],catalog:'9129',qty:1,unit:412,reqBy:'Postdoc',date:todayKey(),status:'requested',urgent:true,quote:'',fund:'R01',note:'Needed for IHC this week'},
-    {id:uid(),item:'Doxorubicin HCl, 50 mg',cat:'Drugs & Compounds',vendor:vById['Selleck Chemicals'],catalog:'S1208',qty:1,unit:97,reqBy:'Grad Student',date:todayKey(),status:'ordered',urgent:false,quote:'',fund:'P30',note:''},
-    {id:uid(),item:'Mouse irradiated chow (bag)',cat:'Mouse Supplies',vendor:vById['Fisher Scientific'],catalog:'MX-CHOW',qty:4,unit:42,reqBy:'Research Tech',date:todayKey(),status:'received',urgent:false,quote:'',fund:'Core',note:''}
-  ];
-  const inventory=[
-    {id:uid(),item:'Fetal Bovine Serum',cat:'Cell Culture',loc:'−20 °C Freezer',qty:3,unitLabel:'bottles',min:2,vendor:vById['Thermo Fisher'],catalog:'16000044',lot:'2245678',exp:'',note:''},
-    {id:uid(),item:'Trypsin-EDTA 0.25%',cat:'Cell Culture',loc:'4 °C Fridge',qty:1,unitLabel:'bottles',min:2,vendor:vById['Sigma-Aldrich'],catalog:'T4049',lot:'SLCK1234',exp:'',note:'Running low'},
-    {id:uid(),item:'Anti-cleaved Caspase-3',cat:'Antibodies',loc:'−20 °C Freezer',qty:2,unitLabel:'vials',min:1,vendor:vById['Cell Signaling Technology'],catalog:'9661',lot:'A77',exp:'2026-09-01',note:''},
-    {id:uid(),item:'Paclitaxel, 10 mg',cat:'Drugs & Compounds',loc:'Chemical Cabinet',qty:1,unitLabel:'vials',min:1,vendor:vById['Selleck Chemicals'],catalog:'S1150',lot:'PX22',exp:'2026-07-10',note:'Check expiry'}
-  ];
-  const events=[
-    {id:uid(),title:'Cancer Biology Seminar: Tumor microenvironment',type:'Seminar',date:nextWeekday(3),time:'12:00',loc:'Seminar Room 100',speaker:'Visiting faculty',link:'',addedBy:'Postdoc',note:'Lunch provided'},
-    {id:uid(),title:'Journal club: senescence in therapy resistance',type:'Journal Club',date:nextWeekday(5),time:'10:00',loc:'Conf Room B',speaker:'Grad Student',link:'https://doi.org/10.1038/example',addedBy:'Grad Student',note:''}
-  ];
-  const jobs=[
-    {id:uid(),title:'Autoclave',frequency:'Weekly',assignees:['Research Tech'],notes:'',lastDoneAt:null,lastDoneBy:'',needsAttention:false,attentionNote:''},
-    {id:uid(),title:'Waste pickup request',frequency:'Monthly',assignees:['Lab Manager'],notes:'',lastDoneAt:null,lastDoneBy:'',needsAttention:false,attentionNote:''}
-  ];
-  const todos=[];
   return {
     settings:{
       labName:'Your Lab', managerName:'Lab Manager', managerEmail:'', labEmails:'',
@@ -879,15 +851,14 @@ function seed(){
       orderCats, locs, members, evTypes,
       created:new Date().toISOString()
     },
-    vendors, orders, inventory, events, jobs, todos,
+    vendors:[], orders:[], inventory:[], events:[], jobs:[], todos:[],
     notices:[], comments:[],
-    activity:[{id:uid(),ts:new Date().toISOString(),who:'BenchSaurus',action:'created',entity:'lab',text:'Welcome to BenchSaurus. Sample data loaded so you can explore. Clear it anytime in Settings.'}]
+    activity:[{id:uid(),ts:new Date().toISOString(),who:'BenchSaurus',action:'created',entity:'lab',text:'Welcome to BenchSaurus. Add your vendors, then start logging orders and inventory. Categories, locations, and lab members can be edited in Settings.'}]
   };
 }
-function nextWeekday(targetDow){ const d=new Date(); let add=(targetDow - d.getDay()+7)%7; if(add===0)add=7; d.setDate(d.getDate()+add); return d.toISOString().slice(0,10); }
 
 /* ---------- trusted admins ----------
-   These accounts are allowed to clear sample data or reset everything.
+   These accounts are allowed to clear all data or reset everything.
    isAdmin() below checks the signed-in Supabase Auth email — never a typed name —
    against two things: this fixed list (for accounts that should always have it,
    regardless of who's currently lab manager), plus whatever email is currently set
@@ -2590,7 +2561,7 @@ function renderSettings(){
       </div>
       ${isAdmin()
         ? `<hr class="soft"><div class="row">
-        <button class="btn ghost" onclick="clearSamples()">Clear sample data</button>
+        <button class="btn ghost" onclick="clearAllData()">Clear orders, inventory, events & vendors</button>
         <button class="btn ghost" style="color:var(--coral-d)" onclick="resetAll()">Reset everything</button>
       </div>`
         : ''}
@@ -2690,7 +2661,7 @@ function sendBackupReminder(){
   S.settings.lastBackupReminder=todayKey(); log('digest','backup','Weekly backup reminder sent'); save();
   toast('Backup reminder ready to send','good');
 }
-function clearSamples(){ if(!isAdmin()){ toast('Not authorized to do that','warn'); return; } if(!confirm('Remove the sample orders, items, events and vendors? Your settings stay.'))return; S.orders=[];S.inventory=[];S.events=[];S.vendors=[];S.notices=[];S.comments=[];S.activity=[{id:uid(),ts:new Date().toISOString(),who:whoAmI()||'You',action:'created',entity:'lab',text:'Cleared sample data. Fresh start.'}]; save(); toast('Sample data cleared','good'); navigate('settings'); }
+function clearAllData(){ if(!isAdmin()){ toast('Not authorized to do that','warn'); return; } if(!confirm('Remove all orders, inventory items, events and vendors? Your settings stay.'))return; S.orders=[];S.inventory=[];S.events=[];S.vendors=[];S.notices=[];S.comments=[];S.activity=[{id:uid(),ts:new Date().toISOString(),who:whoAmI()||'You',action:'created',entity:'lab',text:'Cleared everything. Fresh start.'}]; save(); toast('Cleared','good'); navigate('settings'); }
 function resetAll(){ if(!isAdmin()){ toast('Not authorized to do that','warn'); return; } if(!confirm('This wipes everything including settings and starts fresh. Continue?'))return; if(CLOUD){ S=seed(); save(); applyChrome(); navigate('dashboard'); toast('Reset complete 🦕','good'); return; } localStorage.removeItem(KEY); load().then(()=>{ applyChrome(); navigate('dashboard'); toast('Reset complete 🦕','good'); }); }
 
 /* =========================================================

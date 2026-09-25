@@ -2,9 +2,10 @@
 
 A free, single-file lab management app for ordering supplies, tracking inventory, running a shared events calendar with a journal-club paper library, keeping up with recurring lab jobs, and posting lab-wide notices — with a lighthearted dinosaur theme and over 50 hidden easter eggs.
 
-No build step, no server to maintain. It's one HTML file that talks to a free Supabase database, and you can host it anywhere that serves static files.
+There is no build step, no server to maintain. It's one HTML file that talks to a free Supabase database, and you can host it anywhere that serves static files.
 
-![Dashboard screenshot](docs/screenshot-dashboard.png)
+See screenshot of dashboard view: <img width="416" height="261" alt="Screenshot 2026-09-24 at 9 56 04 PM" src="https://github.com/user-attachments/assets/0b5f6809-71df-4c0e-a011-c3452ce5b52e" />
+
 
 ## Features
 
@@ -49,14 +50,13 @@ No build step, no server to maintain. It's one HTML file that talks to a free Su
    const SUPA_KEY = "";   // paste your anon/publishable key here
    ```
 
-Until you do this, the app runs fine in **local-only mode** — one browser, nothing shared — so you can try it out before setting anything up.
+Until you do this, the app runs fine in **local-only mode**: one browser, nothing shared. That way, you can try it out before setting anything up.
 
 ### 2. Host the file
 
 Any static host works. A few free options:
 
 - **Cloudflare Pages** — drag-and-drop deploy, must be named `index.html`
-- **Netlify** — same idea, drag-and-drop or connect a repo
 - **GitHub Pages** — serve straight from this repo
 
 ### 3. Make it yours
